@@ -56,11 +56,9 @@ public class Ex1StudentAverageGradeApp {
 		return (avrGrade/3);
 	}
 	
-	public static boolean checkStudent(String name, Hashtable students) {
+	public static boolean checkStudent(String name, Hashtable<String, Double> students) {
 		
-		Hashtable<String, Double> temp = students;
 		Enumeration<String> names = students.keys();
-		int i = 0;
 
 		System.out.println("Name: "+name);
 		
@@ -68,7 +66,6 @@ public class Ex1StudentAverageGradeApp {
 			if(name.equals(names.nextElement())) {
 				return true;
 			}
-			i++;
 		}
 		return false;
 	}

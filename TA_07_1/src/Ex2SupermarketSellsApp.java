@@ -58,7 +58,7 @@ public class Ex2SupermarketSellsApp {
 			String price = JOptionPane.showInputDialog("Introduce el precio de ese articulo: ");
 			//Double priceArticle = Double.parseDouble(price);
 			
-			String[] product = {art, quant, price};
+			String[] product = {article, quant, price};
 			list.add(product);
 		}
 	}

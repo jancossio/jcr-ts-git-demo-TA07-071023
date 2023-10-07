@@ -1,7 +1,5 @@
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
@@ -57,6 +55,7 @@ public class Ex3StockControlApp {
 			    String produ = pro.toLowerCase();
 				if(!checkProductExists(articles, produ)){
 					setNewShopProduct(articles, produ);
+					JOptionPane.showMessageDialog(null, "El producto ["+produ+"] ha quedado registrado en la base de datos.");
 				}else {
 					JOptionPane.showMessageDialog(null, "Este producto ya existe, no puedes hacer esta operacion.");
 				}
@@ -101,7 +100,7 @@ public class Ex3StockControlApp {
 				
 	    String quant = JOptionPane.showInputDialog("¿Cuantas unidades quieres agregar de este nuevo producto?: ");
 		//Integer quantity = Integer.parseInt(quant);
-		String pri = JOptionPane.showInputDialog("Introduce el nombre del nuevo producto: ");
+		String pri = JOptionPane.showInputDialog("Cual es el precio de cada unidad de este producto?: ");
 		//Integer price = Integer.parseInt(pri);
 		addShopProduct(list, name, quant, pri);
 	}
