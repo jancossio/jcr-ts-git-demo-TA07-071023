@@ -25,8 +25,7 @@ public class Ex3StockControlApp {
 			String act = JOptionPane.showInputDialog("Introduce la accion que deseas realizar: (a: agregar/c: consultar/m: modificar/s: stock/e: eliminar)");
 		    String action = act.toLowerCase();
 		    
-		    switch(action){
-			
+		  switch(action){
 			case "c":
 				String prod = JOptionPane.showInputDialog("Introduce el nombre del producto que desees consultar: ");
 			    String produc = prod.toLowerCase();
@@ -38,20 +37,24 @@ public class Ex3StockControlApp {
 			    }
 				break;
 			case "m":
-				String art = JOptionPane.showInputDialog("Introduce el nombre del producto que desees modificar: ");
+				String output = countStock(articles);
+				output = output+"Introduce el nombre del producto que desees modificar: ";
+				String art = JOptionPane.showInputDialog(output);
 			    String articl = art.toLowerCase();;
 				if(checkProductExists(articles, articl)) {
 				    modifyShopProduct(articles,articl);
 			    }else {
-			    	String resp = JOptionPane.showInputDialog("El producto que buscas no existe, ¿deseas añadirlo?: (si/no)");
+			    	String resp = JOptionPane.showInputDialog("El producto que buscas no existe, ¿deseas añadirlo?: (s/n)");
 				    String response = resp.toLowerCase();
-				    if(response.equals("si")) 
+				    if(response.equals("s")) 
 				    	setNewShopProduct(articles, articl);
 			    }
 			    
 				break;
 			case "a":
-				String pro = JOptionPane.showInputDialog("Introduce el nombre del nuevo producto: ");
+				String outprint = countStock(articles);
+				outprint = outprint+"Introduce el nombre del nuevo producto: ";
+				String pro = JOptionPane.showInputDialog(outprint);
 			    String produ = pro.toLowerCase();
 				if(!checkProductExists(articles, produ)){
 					setNewShopProduct(articles, produ);
@@ -64,7 +67,9 @@ public class Ex3StockControlApp {
 			    showStock(articles);
 				break;
 			case "e":
-				String arti = JOptionPane.showInputDialog("Introduce el nombre del producto que desees eliminar: ");
+				String outp = countStock(articles);
+				outp = outp+"Introduce el nombre del producto que desees eliminar: ";
+				String arti = JOptionPane.showInputDialog(outp);
 			    String article = arti.toLowerCase();
 				if(checkProductExists(articles, article)){
 					ereaseShopProduct(articles, article);
@@ -75,9 +80,9 @@ public class Ex3StockControlApp {
 			default:
 				JOptionPane.showMessageDialog(null, "La accion introducida no se reconoce");
 			}
-		    String go = JOptionPane.showInputDialog("¿deseas continuar realizando otra accion?: (si/no)");
+		    String go = JOptionPane.showInputDialog("¿deseas continuar realizando otra accion?: (s/n)");
 		    goOn = go.toLowerCase();
-    	}while(goOn.equals("si"));
+    	}while(goOn.equals("s"));
 	}
 	
 	public static void modifyShopProduct(Hashtable<String, String[]> list, String name) {
@@ -125,17 +130,23 @@ public class Ex3StockControlApp {
 	
 	public static void showStock(Hashtable<String, String[]> list) {
 		
-		//Enumeration<String[]> enumeration = list.elements();
+		String output = countStock(list);
+		JOptionPane.showMessageDialog(null, output);
+	}
+	
+	public static String countStock(Hashtable<String, String[]> list){
 		Enumeration<String> names = list.keys();
 		String tmpName="";
 		String[] tmpContent;
+		String output = "Stock\r\n";
 		
 		while(names.hasMoreElements()) {
 			tmpName = names.nextElement();
 			tmpContent = list.get(tmpName);
-			JOptionPane.showMessageDialog(null, "Del producto "+tmpName+" hay "+tmpContent[0]+" unidad/es en stock a un precio de "+tmpContent[1]+" euros");
-
+			//JOptionPane.showMessageDialog(null, "Del producto "+tmpName+" hay "+tmpContent[0]+" unidad/es en stock a un precio de "+tmpContent[1]+" euros");
+			output = output +tmpName+" \t"+tmpContent[0]+" unidades a "+tmpContent[1] +"€\r\n";
 		}
+		return output;
 	}
 	
 	public static void addShopProduct(Hashtable<String, String[]> list, String name, String stock, String price) {

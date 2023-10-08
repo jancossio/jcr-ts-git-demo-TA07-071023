@@ -17,21 +17,9 @@ public class Ex2SupermarketSellsApp {
 		
 		fillShopList(numArticles, shopList);
 		
-		//System.out.println(shopList);
+		double totalIvaPrice = showPurchase(shopList, IVA);
 		
-		double totalPrice = getTotalPrice(shopList);
-		
-		JOptionPane.showMessageDialog(null, "El precio bruto de la compra es: "+totalPrice);
-		
-		double totalIvaPrice = totalPrice + (totalPrice * IVA);
-		
-		JOptionPane.showMessageDialog(null, "El precio con IVA de la compra es: "+totalIvaPrice);
-		
-		Integer totalNumArticles = countArticles(shopList);
-		
-		JOptionPane.showMessageDialog(null, "La cantidad de articulos comprados es: "+totalNumArticles);
-
-		double payMoney;
+		double payMoney = 0;
 		
 		do {
 			String pay = JOptionPane.showInputDialog("Introduce la cantidad de dinero con la que quieras pagar: ");
@@ -44,6 +32,39 @@ public class Ex2SupermarketSellsApp {
 		double change = payMoney - totalIvaPrice;
 		
 		JOptionPane.showMessageDialog(null, "Has pagado: "+payMoney+" , por lo que se te devolverá: "+change);
+	}
+	
+	public static double showPurchase( ArrayList<String[]> list, double ivaApplied) {
+		
+		Iterator<String[]> it = list.iterator();
+		
+		String[] tmp = new String[3];
+		double totalPrice = 0;
+		
+		String quant = "";
+		String price = "";
+		double result = 0;
+		
+		String output = "Stock\r\n";
+		
+		while(it.hasNext()) {
+			
+			tmp = it.next();
+			quant = tmp[1];
+			Integer quantity = Integer.parseInt(quant);
+			price = tmp[2];
+			Double priceProd = Double.parseDouble(price);
+			output = output +tmp[0]+" \t"+tmp[1]+" unidades a "+tmp[2] +"€\r\n";
+			
+			result = priceProd * quantity;
+			totalPrice += result;
+		}
+		output = output +" \t"+" Precio de la compra: "+totalPrice+"€\r\n";
+		totalPrice = totalPrice + (totalPrice*ivaApplied);
+		output = output +" \t"+" Precio total de la compra con IVA: "+totalPrice+"€\r\n";
+		JOptionPane.showMessageDialog(null, output);
+		
+		return totalPrice;
 	}
 	
 	public static void fillShopList(int nArticles, ArrayList<String[]> list) {

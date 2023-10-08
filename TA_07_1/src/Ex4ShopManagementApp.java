@@ -29,7 +29,7 @@ public class Ex4ShopManagementApp {
 		    
 		    switch(action){
 			
-			case "c":
+		    case "c":
 				String prod = JOptionPane.showInputDialog("Introduce el nombre del producto que desees consultar: ");
 			    String produc = prod.toLowerCase();
 			    if(checkProductExists(articles, produc)) {
@@ -39,22 +39,25 @@ public class Ex4ShopManagementApp {
 					JOptionPane.showMessageDialog(null, "El producto introducido no existe en el registro.");
 			    }
 				break;
-				
 			case "m":
-				String art = JOptionPane.showInputDialog("Introduce el nombre del producto que desees modificar: ");
+				String output = countStock(articles);
+				output = output+"Introduce el nombre del producto que desees modificar: ";
+				String art = JOptionPane.showInputDialog(output);
 			    String articl = art.toLowerCase();;
 				if(checkProductExists(articles, articl)) {
 				    modifyShopProduct(articles,articl);
 			    }else {
-			    	String resp = JOptionPane.showInputDialog("El producto que buscas no existe, ¿deseas añadirlo?: (si/no)");
+			    	String resp = JOptionPane.showInputDialog("El producto que buscas no existe, ¿deseas añadirlo?: (s/n)");
 				    String response = resp.toLowerCase();
-				    if(response.equals("si")) 
+				    if(response.equals("s")) 
 				    	setNewShopProduct(articles, articl);
 			    }
+			    
 				break;
-				
 			case "a":
-				String pro = JOptionPane.showInputDialog("Introduce el nombre del nuevo producto: ");
+				String outprint = countStock(articles);
+				outprint = outprint+"Introduce el nombre del nuevo producto: ";
+				String pro = JOptionPane.showInputDialog(outprint);
 			    String produ = pro.toLowerCase();
 				if(!checkProductExists(articles, produ)){
 					setNewShopProduct(articles, produ);
@@ -62,14 +65,14 @@ public class Ex4ShopManagementApp {
 				}else {
 					JOptionPane.showMessageDialog(null, "Este producto ya existe, no puedes hacer esta operacion.");
 				}
-				
 				break;
 			case "s":
 			    showStock(articles);
 				break;
-				
 			case "e":
-				String arti = JOptionPane.showInputDialog("Introduce el nombre del producto que desees eliminar: ");
+				String outp = countStock(articles);
+				outp = outp+"Introduce el nombre del producto que desees eliminar: ";
+				String arti = JOptionPane.showInputDialog(outp);
 			    String article = arti.toLowerCase();
 				if(checkProductExists(articles, article)){
 					ereaseShopProduct(articles, article);
@@ -80,22 +83,18 @@ public class Ex4ShopManagementApp {
 				
 			case "v":
 				ArrayList<String[]> shopList= new ArrayList<String[]>();
-				String num = JOptionPane.showInputDialog("Introduce la cantidad de articulos diferentes de la compra: ");
-				Integer numArticles = Integer.parseInt(num);
 				
-				fillShopList(numArticles, shopList, articles);
+				fillShopList(shopList, articles);
 				
-				double totalPrice = getTotalPrice(shopList);				
-				double totalIvaPrice = totalPrice + (totalPrice * IVA);
-				JOptionPane.showMessageDialog(null, "El precio de la compra es: "+totalIvaPrice);
+				double totalPrice = showPurchase(shopList, IVA);
 				break;
 				
 			default:
 				JOptionPane.showMessageDialog(null, "La accion introducida no se reconoce");
 			}
-		    String go = JOptionPane.showInputDialog("¿deseas continuar realizando otra accion?: (si/no)");
+		    String go = JOptionPane.showInputDialog("¿deseas continuar realizando otra accion?: (s/n)");
 		    goOn = go.toLowerCase();
-    	}while(goOn.equals("si"));
+    	}while(goOn.equals("s"));
 	}
 	
 	public static void modifyShopProduct(Hashtable<String, String[]> list, String name) {
@@ -147,13 +146,15 @@ public class Ex4ShopManagementApp {
 		Enumeration<String> names = list.keys();
 		String tmpName="";
 		String[] tmpContent;
+		String output = "Stock\r\n";
 		
 		while(names.hasMoreElements()) {
 			tmpName = names.nextElement();
 			tmpContent = list.get(tmpName);
-			JOptionPane.showMessageDialog(null, "Del producto "+tmpName+" hay "+tmpContent[0]+" unidad/es en stock a un precio de "+tmpContent[1]+" euros");
-
+			//JOptionPane.showMessageDialog(null, "Del producto "+tmpName+" hay "+tmpContent[0]+" unidad/es en stock a un precio de "+tmpContent[1]+" euros");
+			output = output +tmpName+" \t"+tmpContent[0]+" unidades a "+tmpContent[1] +"€\r\n";
 		}
+		JOptionPane.showMessageDialog(null, output);
 	}
 	
 	public static void addShopProduct(Hashtable<String, String[]> list, String name, String stock, String price) {
@@ -177,9 +178,12 @@ public class Ex4ShopManagementApp {
 		list.put(name, tmp);
 	}
 	
-	public static void fillShopList(int nArticles, ArrayList<String[]> list, Hashtable<String, String[]> stock) {
+	public static void fillShopList(ArrayList<String[]> list, Hashtable<String, String[]> stock) {
 		
-		for(int i = 0; i<nArticles; i++) {
+		boolean repeat = true;
+		int i = 0;
+		
+		do {
 			String art = JOptionPane.showInputDialog("Introduce el articulo "+(i+1)+" de la compra: ");
 		    String article = art.toLowerCase();
 		    
@@ -195,6 +199,15 @@ public class Ex4ShopManagementApp {
 					String[] product = {article, quant, result[1]};
 					list.add(product);
 				    sellShopProduct(stock,article,units);
+				    
+				    String deci = JOptionPane.showInputDialog("¿Deseas agregar otro producto a esta compra? (s/n)");
+				    String decision = deci.toLowerCase();
+				    
+				    if(decision.equals("s")) {
+				    	repeat = true;
+				    }else if(decision.equals("n")) {
+				    	repeat = false;
+				    }
 
 				}else {
 					JOptionPane.showMessageDialog(null, "Lo sentimos pero, no se disponen de tantas unidades en stock.");
@@ -203,7 +216,22 @@ public class Ex4ShopManagementApp {
 		    }else {
 				JOptionPane.showMessageDialog(null, "Lo sentimos pero, el producto que busca no se encuentra entre el stock actual.");
 		    }
+		}while(repeat);
+	}
+	
+	public static String countStock(Hashtable<String, String[]> list){
+		Enumeration<String> names = list.keys();
+		String tmpName="";
+		String[] tmpContent;
+		String output = "Stock\r\n";
+		
+		while(names.hasMoreElements()) {
+			tmpName = names.nextElement();
+			tmpContent = list.get(tmpName);
+			//JOptionPane.showMessageDialog(null, "Del producto "+tmpName+" hay "+tmpContent[0]+" unidad/es en stock a un precio de "+tmpContent[1]+" euros");
+			output = output +tmpName+" \t"+tmpContent[0]+" unidades a "+tmpContent[1] +"€\r\n";
 		}
+		return output;
 	}
 	
 	public static double getTotalPrice(ArrayList<String[]> list) {
@@ -227,6 +255,39 @@ public class Ex4ShopManagementApp {
 			result = priceProd * quantity;
 			totalPrice += result;
 		}
+		
+		return totalPrice;
+	}
+	
+public static double showPurchase( ArrayList<String[]> list, double iva) {
+		
+		Iterator<String[]> it = list.iterator();
+		
+		String[] tmp = new String[3];
+		double totalPrice = 0;
+		
+		String quant = "";
+		String price = "";
+		double result = 0;
+		
+		String output = "Stock\r\n";
+		
+		while(it.hasNext()) {
+			
+			tmp = it.next();
+			quant = tmp[1];
+			Integer quantity = Integer.parseInt(quant);
+			price = tmp[2];
+			Double priceProd = Double.parseDouble(price);
+			output = output +tmp[0]+" \t"+tmp[1]+" unidades a "+tmp[2] +"€\r\n";
+			
+			result = priceProd * quantity;
+			totalPrice += result;
+		}
+		output = output +" \t"+" Precio de la compra: "+totalPrice+"€\r\n";
+		double ivaPrice = totalPrice+(totalPrice*iva);
+		output = output +" \t"+" Precio total de la compra con IVA: "+ivaPrice+"€\r\n";
+		JOptionPane.showMessageDialog(null, output);
 		
 		return totalPrice;
 	}
